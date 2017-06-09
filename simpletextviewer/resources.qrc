@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>documentation/images/browse.png</file>
+        <file>documentation/images/fadedfilemenu.png</file>
+        <file>documentation/images/filedialog.png</file>
+        <file>documentation/images/handbook.png</file>
+        <file>documentation/images/icon.png</file>
+        <file>documentation/images/mainwindow.png</file>
+        <file>documentation/images/open.png</file>
+        <file>documentation/images/Thumbs.db</file>
+        <file>documentation/images/wildcard.png</file>
+        <file>documentation/about.txt</file>
+        <file>documentation/browse.html</file>
+        <file>documentation/filedialog.html</file>
+        <file>documentation/findfile.html</file>
+        <file>documentation/index.html</file>
+        <file>documentation/intro.html</file>
+        <file>documentation/openfile.html</file>
+        <file>documentation/simpletextviewer.qch</file>
+        <file>documentation/simpletextviewer.qhc</file>
+        <file>documentation/simpletextviewer.qhcp</file>
+        <file>documentation/simpletextviewer.qhp</file>
+        <file>documentation/wildcardmatching.html</file>
+    </qresource>
+</RCC>

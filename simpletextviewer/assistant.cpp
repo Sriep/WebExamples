@@ -102,8 +102,9 @@ bool Assistant::startAssistant()
 
         QStringList args;
         args << QLatin1String("-collectionFile")
-            << QLibraryInfo::location(QLibraryInfo::ExamplesPath)
-            + QLatin1String("/assistant/simpletextviewer/documentation/simpletextviewer.qhc")
+            //<< QLibraryInfo::location(QLibraryInfo::ExamplesPath)
+            //+ QLatin1String("/assistant/simpletextviewer/documentation/simpletextviewer.qhc")
+            << QLatin1String("simpletextviewer.qhc")
             << QLatin1String("-enableRemoteControl");
 
         proc->start(app, args);

@@ -15,3 +15,6 @@ docs.files += $$PWD/documentation
 docs.path = $$target.path
 
 INSTALLS += target docs
+
+RESOURCES += \
+    resources.qrc
