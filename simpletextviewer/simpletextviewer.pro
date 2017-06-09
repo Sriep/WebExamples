@@ -24,7 +24,7 @@ DISTFILES += \
     deploy/buildWin_simpletextviewer1.bat \
     deploy/buildWin_simpletextviewer2.bat \
     deploy/buildWin_simpletextviewer3.bat \
-    deploy/EventOrganiser.iss \
     deploy/InfoAfterWin.txt \
     deploy/InfoBeforeWin.txt \
-    deploy/LicenseFileWin.txt
+    deploy/LicenseFileWin.txt \
+    deploy/simpletextviewer.iss
