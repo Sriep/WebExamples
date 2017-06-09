@@ -3,13 +3,16 @@ REM buildWin_minimal_map.bat
 REM Initilise builds
 call C:\"Program Files (x86)\Microsoft Visual Studio 14.0\VC"\vcvarsall.bat amd64
 
+REM source varables
+set BUILD_DIR=C:\Data\Build_simpletextviewer
+set SRCDIR=%BUILD_DIR%\WebExamples\minimal_map
+set GITHUB_URL=https://github.com/Sriep/WebExamples.git
+
 REM Set varables
-set BUILD_DIR=C:\Data\Build
 set QT_DIR=C:\Qt\5.9\msvc2015_64
 set PATH=%QT_DIR%\bin;%PATH%
 set WINDEPLOYQT_EXE=%QT_DIR%\bin\windeployqt.exe
 set INNO_DIR="C:\Program Files (x86)\Inno Setup 5"
-set SRCDIR=%BUILD_DIR%\WebExamples\minimal_map
 
 REM Clear build directory
 REM del /s /q  %BUILD_DIR%
@@ -19,7 +22,7 @@ mkdir %BUILD_DIR%
 cd %BUILD_DIR%
 
 REM Download from GitHub
-git clone https://github.com/Sriep/WebExamples.git
+git clone %GITHUB_URL%
 
 REM build
 cd %SRCDIR%

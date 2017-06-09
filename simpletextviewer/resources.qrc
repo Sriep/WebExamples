@@ -7,7 +7,6 @@
         <file>documentation/images/icon.png</file>
         <file>documentation/images/mainwindow.png</file>
         <file>documentation/images/open.png</file>
-        <file>documentation/images/Thumbs.db</file>
         <file>documentation/images/wildcard.png</file>
         <file>documentation/about.txt</file>
         <file>documentation/browse.html</file>
@@ -21,5 +20,6 @@
         <file>documentation/simpletextviewer.qhcp</file>
         <file>documentation/simpletextviewer.qhp</file>
         <file>documentation/wildcardmatching.html</file>
+        <file>documentation/helpregen.bat</file>
     </qresource>
 </RCC>

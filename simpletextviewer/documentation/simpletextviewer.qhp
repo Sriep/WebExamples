@@ -4,15 +4,15 @@
     <virtualFolder>doc</virtualFolder>
     <filterSection>
         <toc>
-            <section title="Simple Text Viewer" ref="index.html">
+            <section title="Simple Text Viewer" ref="./index.html">
                 <section title="Find File" ref="./findfile.html">
                     <section title="File Dialog" ref="./filedialog.html"></section>
                     <section title="Wildcard Matching" ref="./wildcardmatching.html"></section>
                     <section title="Browse" ref="./browse.html"></section>
                     </section>
                 <section title="Open File" ref="./openfile.html"></section>
-                </section>
-            </toc>
+            </section>
+        </toc>
         <keywords>
             <keyword name="Display" ref="./index.html"/>
             <keyword name="Rich text" ref="./index.html"/>
@@ -30,6 +30,7 @@
             <keyword name="Select" ref="./openfile.html"/>
             </keywords>
         <files>
+            <file>*.html</file>
             <file>browse.html</file>
             <file>filedialog.html</file>
             <file>findfile.html</file>

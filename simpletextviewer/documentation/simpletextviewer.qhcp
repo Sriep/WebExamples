@@ -3,7 +3,6 @@
     <assistant>
         <title>Simple Text Viewer</title>
         <applicationIcon>images/handbook.png</applicationIcon>
-        <cacheDirectory>QtProject/SimpleTextViewer</cacheDirectory>
         <startPage>qthelp://org.qt-project.examples.simpletextviewer/doc/index.html</startPage>
         <aboutMenuText>
             <text>About Simple Text Viewer</text>
@@ -21,10 +20,10 @@
             <file>
                 <input>simpletextviewer.qhp</input>
                 <output>simpletextviewer.qch</output>
-                </file>
-            </generate>
+            </file>
+        </generate>
         <register>
             <file>simpletextviewer.qch</file>
-            </register>
-        </docFiles>
+        </register>
+    </docFiles>
     </QHelpCollectionProject>
