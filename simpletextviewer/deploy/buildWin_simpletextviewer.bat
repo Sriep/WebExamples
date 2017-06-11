@@ -42,10 +42,10 @@ mkdir %RELEASE_DIR%\bin
 copy /y  %QT_DIR%\bin\assistant.exe %RELEASE_DIR%\bin\assistant.exe
 copy /y  %QT_DIR%\bin\Qt5Help.dll %RELEASE_DIR%\bin\Qt5Help.dll
 copy /y  %QT_DIR%\bin\Qt5Printsupport.dll %RELEASE_DIR%\bin\Qt5Printsupport.dll
-copy /y  %QT_DIR%\bin\Qt5Widgets.dll %RELEASE_DIR%\bin\Qt5Widgets.dll
-copy /y  %QT_DIR%\bin\Qt5Gui.dll %RELEASE_DIR%\bin\Qt5Gui.dll
+REM copy /y  %QT_DIR%\bin\Qt5Widgets.dll %RELEASE_DIR%\bin\Qt5Widgets.dll
+REM copy /y  %QT_DIR%\bin\Qt5Gui.dll %RELEASE_DIR%\bin\Qt5Gui.dll
 copy /y  %QT_DIR%\bin\Qt5Sql.dll %RELEASE_DIR%\bin\Qt5Sql.dll
-copy /y  %QT_DIR%\bin\Qt5Core.dll %RELEASE_DIR%\bin\Qt5Core.dll
+REM copy /y  %QT_DIR%\bin\Qt5Core.dll %RELEASE_DIR%\bin\Qt5Core.dll
 copy /y  %QT_DIR%\bin\Qt5Network.dll %RELEASE_DIR%\bin\Qt5Network.dll
 copy /y  %SRCDIR%\documentation\simpletextviewer.qhc  %RELEASE_DIR%\simpletextviewer.qhc
 
