@@ -93,7 +93,7 @@ bool Assistant::startAssistant()
         proc = new QProcess();
 
     if (proc->state() != QProcess::Running) {
-        //QString app = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
+        QString app; //= QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
 #if !defined(Q_OS_MAC)
         app += QLatin1String("assistant");
 #else
