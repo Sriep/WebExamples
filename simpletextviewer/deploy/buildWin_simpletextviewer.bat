@@ -1,7 +1,6 @@
 REM buildWin_minimal_map.bat
 
-REM Initilise builds
-call C:\"Program Files (x86)\Microsoft Visual Studio 14.0\VC"\vcvarsall.bat amd64
+
 
 REM source varables
 set PROJECTNAME=simpletextviewer
@@ -22,6 +21,8 @@ cd %BUILD_DIR%
 REM Download from GitHub
 git clone %GITHUB_URL%
 
+REM Initilise builds
+call C:\"Program Files (x86)\Microsoft Visual Studio 14.0\VC"\vcvarsall.bat amd64
 REM build
 cd %SRCDIR%
 qmake.exe %SRCDIR%\%PROJECTNAME%.pro -spec win32-msvc "CONFIG+=qtquickcompiler" && jom.exe qmake_all

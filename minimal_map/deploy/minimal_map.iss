@@ -26,7 +26,7 @@ InfoBeforeFile=InfoBeforeWin.txt
 InfoAfterFile=InfoAfterWin.txt
 ;OutputDir=C:\Deployment
 OutputBaseFilename=minimal_mapSetup
-;SetupIconFile=E:\Mobile\Mobile\Deploy\eeventa512_oVF_icon.ico
+;SetupIconFile=iconfile.ico
 Compression=lzma
 SolidCompression=yes
 

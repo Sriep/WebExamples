@@ -28,3 +28,14 @@ cd %SRCDIR%
 qmake.exe %SRCDIR%\%PROJECTNAME%.pro -spec win32-msvc "CONFIG+=qtquickcompiler" && jom.exe qmake_all
 jom.exe 
 jom.exe clean
+
+REM Build release
+set WINDEPLOYQT_EXE=%QT_DIR%\bin\windeployqt.exe
+set RELEASE_DIR=%SRCDIR%\release
+set QML_DIR=%SRCDIR%
+%WINDEPLOYQT_EXE% --qmldir %QML_DIR% %RELEASE_DIR%\%PROJECTNAME%.exe
+
+REM Create install file
+set INNO_DIR="C:\Program Files (x86)\Inno Setup 5"
+cd %INNO_DIR%
+iscc /Q %SRCDIR%\deploy\%PROJECTNAME%.iss
