@@ -1,0 +1,125 @@
+We describe how to create a simple build deploy auto-script for Qt project that incorporates Qt Assistant and uses a modified version of the <a href="http://doc.qt.io/qt-5/qtassistant-simpletextviewer-example.html">QT Simple text viewer</a> as an example project.
+
+This is targeted at the situations where you are working on a Windows based Qt Project using Qt creator and have finish coding and wish to move to deployment. We will look at how to write a Windows .bat file that will auto build the project then create an install script for installation on Windows.This is a follow on from the minimal_map post and looks at a more complicated example.
+<h2>Modifications to simpletextviewer</h2>
+In order to run the simpletextviewer outside the Qt Example framework, we have made a few alterations.
+<ul>
+ 	<li>resources.qrc: The contents of the documentation subdirectory have been added as resources as indicated in the new resources.qrc file. This adds the files in documents folder to the simpletextviewer.exe binary, so that the files can be accessed at runtime. You can read about the resource system at <a href="http://doc.qt.io/qt-5/resources.html">http://doc.qt.io/qt-5/resources.html</a>.</li>
+ 	<li>simpletextviewer.pro file: Added resources.qrc as a resource file.</li>
+ 	<li>assistant.cpp: startAssistant() changed so that simpletextviewer.exe runs assistant.exe from the working directory. showDocumentation changed so that the start Html file is found in the resources.</li>
+</ul>
+You can download the project from <a href="https://github.com/Sriep/WebExamples">https://github.com/Sriep/WebExamples</a> by running
+<blockquote>git clone https://github.com/Sriep/WebExamples.git</blockquote>
+It can then be found in the simpletextviewer subdirectory.
+<h2>Build and run</h2>
+Build and run simpletextviewer in Qt Creator. Figure 1 shows the result.
+
+[caption id="attachment_28" align="alignnone" width="300"]<img class="size-medium wp-image-28" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/sevf1simpletesxtviewer-300x199.png" alt="simpletextviewer program running" width="300" height="199" /> Figure1: Simple text viewer application running.[/caption]
+
+Now select the simple text viewer application and either choose the Help/Help Contents menu option, or the F1 keyboard shortcut. You should see the following error in figure 2.
+
+[caption id="attachment_27" align="alignnone" width="279"]<img class="size-medium wp-image-27" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/sevf3qhcnotfound-279x300.png" alt="Errror message on running assistant without .qhc file." width="279" height="300" /> Figure 2: Error message on running assistant without the .qhc file.[/caption]
+
+The reason for the error is that simpletextviewer.exe is trying to run assistant.exe with simpletextviewer.qhc as input. To fix the problem we need to copy simpletextviewer.qhc into the top level of the build directory. However, the .qhc file needs to build first. The .qhc, qhp, qhcp and qch files, the details are explained at http://doc.qt.io/qt-5/qthelp-framework.html. In short
+<ul>
+ 	<li>.qhp - contains the HTML formatted text to be displayed in assistant.</li>
+ 	<li>.qhcp - contains configuration customisation details for assistant.</li>
+ 	<li>.qhcp - binary version of .qhp file. Generated using the command: <em>qhelpgenerator </em>simpletextviewer<em>.</em>qhp<em> -o simpletextviewer.qch</em></li>
+ 	<li>.qhc - binary input file to assistant.exe. Generated using the command: qcollectiongenerator simpletextviewer.qhcp -o simpletextviewer.qhc</li>
+</ul>
+These could be built by running the commands by hand or in a batch file then manually copying the .qhc file over to the build directory.  However, the recommended way would be to add them to the Build settings as Custom Process Steps; figure 4.
+
+[caption id="attachment_30" align="alignnone" width="300"]<img class="size-medium wp-image-30" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/sevf4BuildSettings-300x236.png" alt="Buils settins showing custom process steps for .qhc file generation." width="300" height="236" /> Figure 4: Buils settins showing custom process steps for .qhc file generation.[/caption]
+
+Open the Project/Build Settings panel. Use the Add Build Step to add three steps.
+<ol>
+ 	<li>Command: qhelpgenerator, Arguments: simpletextviewer.qhp -o simpletextviewer.qch</li>
+ 	<li>Command: qcollectiongenerator, Arguments: simpletextviewer.qhcp -o simpletextviewer.qhc</li>
+ 	<li>Command: cmd.exe, Arguments: /c copy %{sourceDir}\documentation\simpletextviewer.qhc %{buildDir}\simpletextviewer.qhc</li>
+</ol>
+%{buildDir} is a varabled holding the build directory.
+
+The main issues with this method is that the Project settings are held in the .pro.user file, which is a generated file so should not be under source control. Hence the build steps will need to be set up each time you reset the project from the source repository.
+<h2>Build Script</h2>
+<a href="http://piersshepperson.co.uk/programming/2017/06/15/autobuild-script-for-qt-projects/">In our previous post,</a> we created a build and install script for a simpler project. Let us see what happens when we apply that script to this project by replacing the PROJECTNAME minimal_map with simpletextviewer.
+
+Well, the first point is that we need to generate simpletextviewer.qhc. If we have set up our Build settings as in the previous section, then we should mirror those changes in our batch file. Following the rule of thumb that the commands from the build settings shuld be included in the build script, including our own custome steps. These modifications are shown in green below.
+<blockquote>REM Batch file for auto build
+
+REM Set project identity variables
+set PROJECTNAME=simpletextviewer
+set GITHUB_URL=https://github.com/Sriep/WebExamples.git
+set BUILD_DIR=C:\Data\Build_%PROJECTNAME%
+
+REM Set executable locations
+set QT_DIR=C:\Qt\5.9\msvc2015_64
+set QT_CREATORDIR=C:\Qt\Tools\QtCreator
+
+REM Set internal variables
+set SRCDIR=%BUILD_DIR%\WebExamples\%PROJECTNAME%
+set PATH=%QT_DIR%\bin;%QT_CREATOR_DIR%/bin;%PATH%
+
+REM Setup build directory
+mkdir %BUILD_DIR%
+cd %BUILD_DIR%
+
+REM Download from GitHub
+git clone %GITHUB_URL%
+
+REM Initialise builds
+call C:\"Program Files (x86)\Microsoft Visual Studio 14.0\VC"\vcvarsall.bat amd64
+
+REM Build project
+cd %SRCDIR%
+qmake.exe %SRCDIR%\%PROJECTNAME%.pro -spec win32-msvc "CONFIG+=qtquickcompiler" &amp;&amp; jom.exe qmake_all
+jom.exe
+jom.exe clean
+
+REM Build release
+set WINDEPLOYQT_EXE=%QT_DIR%\bin\windeployqt.exe
+set RELEASE_DIR=%SRCDIR%\release
+set QML_DIR=%SRCDIR%
+%WINDEPLOYQT_EXE% --qmldir %QML_DIR% %RELEASE_DIR%\%PROJECTNAME%.exe
+
+<span style="color: #339966;">REM Generate qhc files</span>
+<span style="color: #339966;"> qhelpgenerator %QML_DIR%\documentation\simpletextviewer.qhp -o %QML_DIR%\documentation\simpletextviewer.qch</span>
+<span style="color: #339966;"> qcollectiongenerator %QML_DIR%\documentation\simpletextviewer.qhcp -o %QML_DIR%\documentation\simpletextviewer.qhc</span>
+<span style="color: #339966;"> copy /y %QML_DIR%\documentation\simpletextviewer.qhc %RELEASE_DIR%\simpletextviewer.qhc</span>
+
+REM Create install file
+set INNO_DIR="C:\Program Files (x86)\Inno Setup 5"
+cd %INNO_DIR%
+iscc /Q %SRCDIR%\deploy\%PROJECTNAME%.iss</blockquote>
+Now change the BUILD_DIR environmental variable to fit your system and run the \WebExamples\simpletextviewer\deploy\buildWin_simpletextviewer1.bat batch file. Assuming all goes well try running \WebExamples\simpletextviewer\release\simpletextviewer.exe. You should be able to run this as shown in Figure 1, the interesting point is what happens when you try to run the assistant with F1 or the menu item Help/Help Contents.
+<h3>Assistant runs normally</h3>
+Assistant runs as shown in Figure 2. Ironically this is the result that indicates a misconfigures system. The operating system has managed to find an assistant.exe to run from somewhere. There is no reason to expect it is the right assistant.exe, but more if simpletextviewer.exe is installed on another system, we cannot expect an assistant.exe to be found unless it is included in the build.
+
+To see what is happening clearly try renaming your Qt directory, or if that is locked the 5.9 or Qt Version directory. You should see the error in Figure 5. Ideally, you should aim to test Qt programme installations on machines that do not have Qt installed, however renaming the Qt directory can be considered a quick fix.
+
+[caption id="attachment_36" align="alignnone" width="285"]<img class="size-full wp-image-36" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/sevf5noassistant.png" alt="Unagble to launch Qt Assistant error" width="285" height="124" /> Figure 5: Unable to launch Qt Assistant error.[/caption]
+<h3>Unable to launch Qt Assistant</h3>
+An error message "Unable to launch Qt Assistant" figure 5 is the expected result. windeployqt.exe failed to copy assistant.exe into the simpletextviewer.exe release directory. Further, if you copy assistant.exe from the Qt Release bin directory you should find that some of the .dll files assistant.exe needs to run are missing. How do we fix this? The way I am going to suggest is to use Dependency Walker. Download and install dependency walker. It can be downloaded from http://www.dependencywalker.com .
+
+Run depends.exe and load assistant.exe. Either drag and drop windows.exe into the window or use the File/Open menu. Eventually, you should see figure 5.
+
+[caption id="attachment_45" align="alignnone" width="300"]<img class="size-medium wp-image-45" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/dependacyVrsWE2-300x224.png" alt="Left -Dependancy Walker with assistant.exe loaded. Right - Release directory after running windeployqt.exe." width="300" height="224" /> Figure 5: Left -Dependancy Walker with assistant.exe loaded. Right - Release directory after running windeployqt.exe. The comparison indicates which DLL we still need.[/caption]
+
+Comparing the DLLs that dependency walker has indicated assistant.exe needs, with those windeployqt.exe has copied we see three missing: Qt5Hdlp.dll, Qt5Printsupport.dll and Qt5Sql,dll. To copy these for files we need to add the following to our batch file.
+<blockquote>REM Copy files for for assistant.exe
+copy /y %QT_DIR%\bin\assistant.exe %RELEASE_DIR%\assistant.exe
+copy /y %QT_DIR%\bin\Qt5Help.dll %RELEASE_DIR%\Qt5Help.dll
+copy /y %QT_DIR%\bin\Qt5Printsupport.dll %RELEASE_DIR%\Qt5Printsupport.dll
+copy /y %QT_DIR%\bin\Qt5Sql.dll %RELEASE_DIR%\Qt5Sql.dll</blockquote>
+Delete the previous build and run the buildWin_simpletextviewer2.bat batch file. Now run simpletextviewer.exe and then try to run the assistant with F1 or the menu item Help/Help Contents.
+
+[caption id="attachment_46" align="alignnone" width="300"]<img class="size-medium wp-image-46" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/sevf4.5nosqldriver-300x46.png" alt="Missing sqlite driver, error message." width="300" height="46" /> Figure 6: Missing sqlite driver, error message.[/caption]
+<h3>Sqlite drivers</h3>
+Ok, so we need to add some sql drivers. As it turns out there is a directory plugins\sqldrivers, which looks promising. Copy this from your QtVersion plugins directory into your simpletextviewer.exe release directory. Now try it to run assistant. Everything should work now.
+
+Let's add the following lines to our batch script.
+<blockquote>mkdir %RELEASE_DIR%\sqldrivers
+copy /y %QT_DIR%\plugins\sqldrivers\qsqlite.dll %RELEASE_DIR%\sqldrivers\qsqlite.dll
+copy /y %QT_DIR%\plugins\sqldrivers\qsqlmysql.dll %RELEASE_DIR%\sqldrivers\qsqlmysql.dll
+copy /y %QT_DIR%\plugins\sqldrivers\qsqlodbc.dll %RELEASE_DIR%\sqldrivers\qsqlodbc.dll
+copy /y %QT_DIR%\plugins\sqldrivers\qsqlpsql.dll %RELEASE_DIR%\sqldrivers\qsqlpsql.dll</blockquote>
+This gives us simpletextviewer\deploy\buildWin_simpletextviewer_final.bat. If we clear our build directory and try running buildWin_simpletextviewer_final.bat we should have our solution. Try installing WebExamples\simpletextviewer\deploy\Output\simpletextviewerSetup.exe on a PC without Qt and check everything works.

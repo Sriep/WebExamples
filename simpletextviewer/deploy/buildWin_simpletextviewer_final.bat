@@ -45,6 +45,12 @@ copy /y  %QT_DIR%\bin\assistant.exe %RELEASE_DIR%\assistant.exe
 copy /y  %QT_DIR%\bin\Qt5Help.dll %RELEASE_DIR%\Qt5Help.dll
 copy /y  %QT_DIR%\bin\Qt5Printsupport.dll %RELEASE_DIR%\Qt5Printsupport.dll
 copy /y  %QT_DIR%\bin\Qt5Sql.dll %RELEASE_DIR%\Qt5Sql.dll
+REM Copy sql drivers
+mkdir %RELEASE_DIR%\sqldrivers
+copy /y  %QT_DIR%\plugins\sqldrivers\qsqlite.dll %RELEASE_DIR%\sqldrivers\qsqlite.dll
+copy /y  %QT_DIR%\plugins\sqldrivers\qsqlmysql.dll %RELEASE_DIR%\sqldrivers\qsqlmysql.dll
+copy /y  %QT_DIR%\plugins\sqldrivers\qsqlodbc.dll %RELEASE_DIR%\sqldrivers\qsqlodbc.dll
+copy /y  %QT_DIR%\plugins\sqldrivers\qsqlpsql.dll %RELEASE_DIR%\sqldrivers\qsqlpsql.dll
 
 REM Create install file
 set INNO_DIR="C:\Program Files (x86)\Inno Setup 5"

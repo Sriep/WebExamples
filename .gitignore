@@ -9,6 +9,8 @@
 *.so
 *.dll
 *.dylib
+*.qhc
+*.qch
 
 # Qt-es
 

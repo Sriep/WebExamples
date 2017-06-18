@@ -52,7 +52,6 @@
 #include <QtCore/QDir>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QProcess>
-
 #include <QtWidgets/QMessageBox>
 
 #include "assistant.h"
@@ -93,18 +92,11 @@ bool Assistant::startAssistant()
         proc = new QProcess();
 
     if (proc->state() != QProcess::Running) {
-        QString app; //= QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
-#if !defined(Q_OS_MAC)
-        app += QLatin1String("assistant");
-#else
-        app += QLatin1String("Assistant.app/Contents/MacOS/Assistant");
-#endif
+        QString app = QLatin1String("assistant");
 
         QStringList args;
         args << QLatin1String("-collectionFile")
-            //<< QLibraryInfo::location(QLibraryInfo::ExamplesPath)
-            //+ QLatin1String("/assistant/simpletextviewer/documentation/simpletextviewer.qhc")
-            << QLatin1String("simpletextviewer.qhc")
+             << QLatin1String("simpletextviewer.qhc")
             << QLatin1String("-enableRemoteControl");
 
         proc->start(app, args);
