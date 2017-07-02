@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=MinimalMap
+Exec=minimal_map %F
+Icon=default
+Comment=Edit this default file
+Terminal=true

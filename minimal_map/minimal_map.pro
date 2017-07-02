@@ -14,4 +14,5 @@ DISTFILES += \
     deploy/InfoAfterWin.txt \
     deploy/InfoBeforeWin.txt \
     deploy/LicenseFileWin.txt \
-    deploy/minimal_map.iss
+    deploy/minimal_map.iss \
+    release/default.desktop
