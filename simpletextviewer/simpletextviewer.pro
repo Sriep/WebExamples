@@ -27,4 +27,6 @@ DISTFILES += \
     deploy/InfoAfterWin.txt \
     deploy/InfoBeforeWin.txt \
     deploy/LicenseFileWin.txt \
-    deploy/simpletextviewer.iss
+    deploy/simpletextviewer.iss \
+    deploy/buildLinux_simpletestviewer.sh \
+    release/default.desktop
