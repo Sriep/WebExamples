@@ -39,10 +39,12 @@ qmake  $SRCDIR/$PROJECTNAME.pro -spec linux-g++ && make qmake_all
 make 
 make clean 
 
+# Generate qhc files
+DOC_DIR=$SRCDIR/documentation
+qhelpgenerator $DOC_DIR/simpletextviewer.qhp -o $RELEASE_DIR/simpletextviewer.qch
+qcollectiongenerator $DOC_DIR/simpletextviewer.qhcp -o $RELEASE_DIR/simpletextviewer.qhc
+
 # Build release
-# mkdir $RELEASE_DIR/plugins
-# cp -r $QT_DIR/plugins/geoservices $RELEASE_DIR/plugins/geoservices
-# cp -r $QT_DIR/plugins/xcbglintegrations $RELEASE_DIR/plugins/xcbglintegrations
 cp $QT_DIR/bin/assistant  $RELEASE_DIR/assistant
 $LINUXDEPLOY  $RELEASE_DIR/assistant
 $LINUXDEPLOY  $RELEASE_DIR/$PROJECTNAME -qmldir=$QML_DIR -appimage -bundle-non-qt-libs -no-translations
