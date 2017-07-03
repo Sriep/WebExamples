@@ -29,4 +29,5 @@ DISTFILES += \
     deploy/LicenseFileWin.txt \
     deploy/simpletextviewer.iss \
     deploy/buildLinux_simpletestviewer.sh \
-    release/default.desktop
+    release/default.desktop \
+    deploy/buildWin_simpletextviewer_final.bat

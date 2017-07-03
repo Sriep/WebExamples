@@ -32,14 +32,18 @@ git clone $GITHUB_URL
 
 # Build project
 cd $SRCDIR
-mkdir release
+# Uncomeant next line if release directory not included in GitHub project
+# mkdir release
 cd $RELEASE_DIR
 qmake  $SRCDIR/$PROJECTNAME.pro -spec linux-g++ && make qmake_all
 make 
 make clean 
 
 # Build release
-mkdir $RELEASE_DIR/plugins
+# mkdir $RELEASE_DIR/plugins
 # cp -r $QT_DIR/plugins/geoservices $RELEASE_DIR/plugins/geoservices
 # cp -r $QT_DIR/plugins/xcbglintegrations $RELEASE_DIR/plugins/xcbglintegrations
-$LINUXDEPLOY  $RELEASE_DIR/$PROJECTNAME -qmldir=$QML_DIR -appimage -bundle-non-qt-libs -no-translations 
+cp $QT_DIR/bin/assistant  $RELEASE_DIR/assistant
+$LINUXDEPLOY  $RELEASE_DIR/assistant
+$LINUXDEPLOY  $RELEASE_DIR/$PROJECTNAME -qmldir=$QML_DIR -appimage -bundle-non-qt-libs -no-translations
+

@@ -92,13 +92,21 @@ bool Assistant::startAssistant()
         proc = new QProcess();
 
     if (proc->state() != QProcess::Running) {
-        QString app = QLatin1String("assistant");
+        QString app;
+#if defined(Q_OS_LINUX)
+        app += QLatin1String("./assistant");
+#elif defined(Q_OS_MACOS)
+        app += QLatin1String("Assistant.app/Contents/MacOS/Assistant");
+#else
+         app += QLatin1String("assistant");
+#endif
 
         QStringList args;
         args << QLatin1String("-collectionFile")
              << QLatin1String("simpletextviewer.qhc")
             << QLatin1String("-enableRemoteControl");
 
+        // assistant -collectionFile simpletextviewer.qhc -enableRemoteControl
         proc->start(app, args);
 
         if (!proc->waitForStarted()) {

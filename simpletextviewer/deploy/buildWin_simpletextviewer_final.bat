@@ -39,6 +39,7 @@ REM Generate qhc files
 qhelpgenerator %QML_DIR%\documentation\simpletextviewer.qhp -o %QML_DIR%\documentation\simpletextviewer.qch
 qcollectiongenerator %QML_DIR%\documentation\simpletextviewer.qhcp -o %QML_DIR%\documentation\simpletextviewer.qhc
 copy /y %QML_DIR%\documentation\simpletextviewer.qhc %RELEASE_DIR%\simpletextviewer.qhc
+copy /y %QML_DIR%\documentation\simpletextviewer.qhc %RELEASE_DIR%\simpletextviewer.qch
 
 REM Copy files for for assistant.exe
 copy /y  %QT_DIR%\bin\assistant.exe %RELEASE_DIR%\assistant.exe

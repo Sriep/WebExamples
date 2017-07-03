@@ -11,7 +11,7 @@
 *.dylib
 *.qhc
 *.qch
-
+*~
 # Qt-es
 
 /.qmake.cache
