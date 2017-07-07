@@ -1,109 +1,115 @@
-Auto scripts for building and deployment are an important part of software development. In the next couple of posts, I will look at creating simple Windows auto build and deploy batch files for applications developed using Qt Creator with GitHub for source control.
+Here I look at creating simple Windows auto build and deploy batch files for applications developed using Qt Creator with GitHub for source control.
 
-This is targeted at the situations where you are working on a Windows based Qt Project using Qt creator and have finish coding and wish to move to deployment. We will look at how to write a Windows .bat file that will auto build the project then create an install script for installation on Windows. In the tutorial, I will use the <a href="https://doc.qt.io/qt-5/qtlocation-minimal-map-example.html">Qt minimal_map example</a>. which I have put on a GitHub site. The project can be cloned from <a href="https://github.com/Sriep/WebExamples.git">https://github.com/Sriep/WebExamples.git</a> and is then found in the minimal_map directory. We will use <a href="http://www.jrsoftware.org/isinfo.php">Inno Setup </a>to create the installation script.
+This is targeted at the situations where you are working on a Windows based Qt Project using Qt creator and have finish coding and wish to move to deployment. We will look at how to write a Windows .bat file that will auto build the project then create an install script for, installation on Windows. This is the most basic type of continuous deployment pipeline, and while using a batch file is all you need here. For more sophisticated deployment pipelines, such as say ones with conditional branches and automated update documentation, it might be best to use more advance tools.
+
+In the tutorial, I will use the <a href="https://doc.qt.io/qt-5/qtlocation-minimal-map-example.html">Qt minimal_map example</a>. which I have put on a GitHub site. The project can be cloned from <a href="https://github.com/Sriep/WebExamples.git">https://github.com/Sriep/WebExamples.git</a> and is then found in the minimal_map directory. We will use <a href="http://www.jrsoftware.org/isinfo.php">Inno Setup </a>to create the installation script.
+
+To follow this example you will need <a href="https://www.qt.io/">Qt Creator</a>, <a href="https://git-scm.com/downloads">Git </a>and <a href="http://www.jrsoftware.org/isdl.php">Inno Setup </a>installed on a Windows machine. The final script can be found <a href="https://github.com/Sriep/WebExamples/blob/master/minimal_map/deploy/buildWin_minimal_map_final.bat">here</a>.
 <h2>Download and run project</h2>
-The basic rule on building Qt Creator projects on the command line is that all the required commands are documented on the Project tab.
+First, to check that everything is working ok, we should download and run the minimal_map project. To do this select a folder and run from the command line
+<pre>git clone https://github.com/Sriep/WebExamples.git</pre>
+Open Qt Creator and open the <em>minimal_map/minimal_map.pro project</em> file. This is the Qt minimal map example that I have copied into a GitHub directory. You should be able to find the original somewhere like C:\Qt\Examples\Qt-5.9\location\minimal_map.
 
-Select a folder and run from the command line
-<blockquote><em><span style="color: #00ff00;">git clone <a href="https://github.com/Sriep/WebExamples.git">https://github.com/Sriep/WebExamples.git</a></span></em></blockquote>
-Open Qt Creator and open the <span class="css-truncate css-truncate-target"><a id="7a40da7ae44f06ab926427dbabf076f8-5210809fb1ef5968f2e94ec64e750401951e8401" class="js-navigation-open" title="minimal_map" href="https://github.com/Sriep/WebExamples/tree/master/minimal_map">minimal_map</a>/</span><em>minimal_map.pro project</em> file. This is the Qt minimal map example that I have copied into a GitHub directory.
-
-In Qt Creator select the Project tab in the left-hand tab panel. Make sure that you are using a Windows Kit, something like "Desktop Qt 5.9.0 MSVC2015 64bit". Build the project and confirm you get something like Figure 1.
+In Qt Creator select the Project tab in the left-hand tab panel. Make sure that you are using a Windows Kit, something like "Desktop Qt 5.9.0 MSVC2015 64bit". Build the project and then run it. Confirm you get something like Figure 1.
 
 [caption id="attachment_13" align="alignnone" width="283"]<img class="size-medium wp-image-13" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f1_oslo-283x300.png" alt="Image of minimal map running." width="283" height="300" /> Figure 1: Image of minimal_map running.[/caption]
-<h2>Build from command line</h2>
+<h2>Build Qt project from DOS command line</h2>
 The rule of thumb for building Qt Creator projects on the command line is to use the code in the Project tab, Build settings page. Figure 2.
 
-[caption id="attachment_14" align="alignnone" width="300"]<img class="size-medium wp-image-14" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f2_build_settings-300x231.png" alt="QT Creator Build settings for the minimal map project." width="300" height="231" /> Figure 2: QT Creator Build settings for the minimal_map project.[/caption]
+[caption id="attachment_14" align="alignnone" width="1024"]<img class="size-large wp-image-14" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f2_build_settings-1024x751.png" alt="QT Creator Build settings for the minimal map project." width="1024" height="751" /> Figure 2: QT Creator Build settings for the minimal_map project.[/caption]
 
 Copying the commands from the Build Steps, Clean Steps sections of the project Build Settings page we get something like. The paths will probably be slightly different for you.
-<blockquote><span style="color: #00ff00;">qmake.exe E:\Examples\WebExamples\minimal_map\minimal_map.pro -spec win32-msvc "CONFIG+=debug" "CONFIG+=qml_debug" &amp;&amp; C:/Qt/Tools/QtCreator/bin/jom.exe qmake_all</span>
+<blockquote><span style="color: #0000ff;">qmake.exe E:\Examples\WebExamples\minimal_map\minimal_map.pro -spec win32-msvc "CONFIG+=debug" "CONFIG+=qml_debug" &amp;&amp; C:/Qt/Tools/QtCreator/bin/jom.exe qmake_all</span>
 
-<span style="color: #00ff00;">jom.exe in E:\Examples\WebExamples\build-minimal_map-Desktop_Qt_5_9_0_MSVC2015_64bit_qt_59_w-Debug</span>
+<span style="color: #00ff00;">jom.exe in E:\Examples\WebExamples\build-minimal_map-Desktop_Qt_5_9_0_MSVC2015_64bit_qt_59_w-Release</span>
 
-<span style="color: #00ff00;">jom.exe clean in E:\Examples\WebExamples\build-minimal_map-Desktop_Qt_5_9_0_MSVC2015_64bit_qt_59_w-Debug</span></blockquote>
-Try running the first qmake.exe command.
+<span style="color: #00ff00;">jom.exe clean in E:\Examples\WebExamples\build-minimal_map-Desktop_Qt_5_9_0_MSVC2015_64bit_qt_59_w-Release</span></blockquote>
+Now test our rule of thumb try running the first qmake.exe command; the one cloured blue..
 
 What goes wrong?
 <h3>Add Qt directory to PATH</h3>
-The first thing that could go wrong is that qmake.exe won't be recognised. This should be an easy problem to fix. You either need to add the directory where qmake.exe is to your PATH environmental variable, or you need to fully path the qmake.exe command.
+The first thing that could go wrong is that qmake.exe won't be recognised. For an experinced Windows develoer this should be a familiar problem to recognise and fix. You either need to add the directory where qmake.exe is to your PATH environmental variable, or you need to fully path the qmake.exe command. We will add it to our PATH at the start of the batch file we are building.
 
-Which qmake.exe am I using?
+So we need to know 'which qmake.exe am we are using'?
 
-Browser to your Qt directory. For me its C:\Qt\5.9\msvc2015. You should see something like figure 3.
+Browse to your Qt directory. For me its C:\Qt\5.9\msvc2015. You should see something like figure 3.
 
-[caption id="attachment_15" align="alignnone" width="300"]<img class="size-medium wp-image-15" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f3_qt59_folder-300x220.png" alt="Qt 5.9 direcotory in windows file explorer, showing the different Qt Versions." width="300" height="220" /> Figure 3: Qt 5.9 directory, showing the different Qt Versions.[/caption]
+[caption id="attachment_15" align="alignnone" width="833"]<img class="size-full wp-image-15" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f3_qt59_folder.png" alt="Qt 5.9 directory in windows file explorer, showing the different Qt Versions." width="833" height="611" /> Figure 3: Qt 5.9 directory, showing the different Qt Versions.[/caption]
 
 There are a lot of different Qt Versions, all with their own bin directories and qmake.exe s. To find the one we need requires a little "paper chase".
 <ol>
  	<li>Go to the Project tab. Note the selected Qt version in the Build &amp; Run section of the left-hand panel. For me its "Desktop Qt 5.9.0 MSVC201564bit" figure 2.</li>
- 	<li>Menu: Tools/Options. Build &amp; Run tab, Kits tab. Select the Qt version from (1) in the list. Probably in the Auto-detected section.</li>
- 	<li>Lots of information should appear about your Qt version. Note the entry in the Qt version row. For me, it's "Qt 5.9.0 MSVC2015 64bit" figure 4.</li>
+ 	<li>Menu: Tools/Options. Build &amp; Run tab, Kits tab. Select the Qt version from (1) in the list. You will probably find it in the Auto-detected section.</li>
+ 	<li>Lots of information should appear about your Qt version. Note the entry in the Qt version row. For me, it's "Qt 5.9.0 MSVC2015 64bit"; figure 4 circled in red. Figure shows a close up of the Qt version row.</li>
  	<li>Now go to the Qt Versions tab and select the Qt version from (3).</li>
- 	<li>The "qmake location" field at the bottom of the page should now be populated with the qmake you want. For me it was "C:\Qt\5.9\msvc2015_64\bin\qmake.exe". Figure 5.</li>
+ 	<li>The "qmake location" field at the bottom of the page should now be populated with the qmake you want. For me it was "C:\Qt\5.9\msvc2015_64\bin\qmake.exe". Figure 6.</li>
 </ol>
-[caption id="attachment_16" align="alignnone" width="300"]<img class="size-medium wp-image-16" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f4BuildRun-300x231.png" alt="Qt Creator, Options, Build&amp; Run, Kits panel." width="300" height="231" /> Figure 4: Qt Creator, Options, Build&amp; Run, Kits panel.[/caption]
+[caption id="attachment_16" align="alignnone" width="1024"]<img class="size-large wp-image-16" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f4BuildRun-1024x789.png" alt="Qt Creator, Options, Build&amp; Run, Kits panel." width="1024" height="789" /> Figure 4: Qt Creator, Options, Build&amp; Run, Kits panel.[/caption]
 
-[caption id="attachment_19" align="alignnone" width="300"]<img class="size-medium wp-image-19" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f4.5_qt5.9Versions-300x203.png" alt="Qt Creator, Options, Build&amp; Run, Qt Version panel." width="300" height="203" /> Figure 5: Qt Creator, Options, Build&amp; Run, Qt Version panel.[/caption]
+<div class="mceTemp">
 
-Remember that some versions of QtCreator might have stuff set up slightly differently. For instance, the Options panel might be located on the Tools menu. Don't panic just look around for it.
+&nbsp;
+<div class="mceTemp">
+<div class="mceTemp"><img class="size-large wp-image-67" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f4.1BuildRun-1024x266.png" alt="Compiler and Qt version rows circled in Options/Build &amp; Run panel." width="1024" height="266" />Figure 5: Compiler and Qt version rows circled in Options/Build &amp; Run panel.&nbsp;
 
-So run the following on the command line. Where instead of C:\Qt\5.9\msvc2015_64 enter whatever qmake path you found on your QtVersion.
-<blockquote><span style="color: #00ff00;">set QT_DIR=C:\Qt\5.9\msvc2015_64</span>
+[caption id="attachment_19" align="alignnone" width="868"]<img class="size-full wp-image-19" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f4.5_qt5.9Versions.png" alt="Qt Creator, Options, Build&amp; Run, Qt Version panel." width="868" height="586" /> Figure 6: Qt Creator, Options, Build&amp; Run, Qt Version panel.[/caption]
 
-<span style="color: #00ff00;">
+Remember that some versions of QtCreator might be set up slightly differently. For instance, the Options panel might be located on the Tools menu. Don't panic just look around for it.
+
+To add qmake.exe to the path run the following on the command line. Where instead of C:\Qt\5.9\msvc2015_64 enter whatever qmake path you found on your QtVersion.
+<blockquote><span style="color: #00ff00;">set QT_DIR=C:\Qt\5.9\msvc2015_64</span><span style="color: #00ff00;">
 set PATH=%QT_DIR%\bin;%PATH%</span></blockquote>
-You should set the Qt bin directory at the head of your PATH, even if qmake.exe is being found. You cannot necessarily be sure the default qmake.exe is the right one.
+Thses two lines should appear somewhere near the top of our batch file. You should set the Qt bin directory at the head of your PATH, even if qmake.exe is being found. You cannot necessarily be sure the default qmake.exe is the right one.
 
 Now rerun the qmake command. qmake should now be found and you should get a new error.
 <h3>QMAKE_MSC_VER isn't set</h3>
-You should all now be getting some error complaining about environmental variable snot being set. For me the error message is
+You should all now be getting some error complaining about environmental variables not being set. For me the error message is
 <blockquote><span style="color: #ff0000;">Info: creating stash file E:\Examples\WebExamples\minimal_map\.qmake.stash</span>
 
 <span style="color: #ff0000;">C:/Qt/5.9/msvc2015_64/mkspecs/features/toolchain.prf:129: Variable QMAKE_CXX.COMPILER_MACROS is not defined.</span>
 
 <span style="color: #ff0000;">Project ERROR: msvc-version.conf loaded but QMAKE_MSC_VER isn't set</span></blockquote>
-At this point, there is the danger of jumping down a rabbit hole.  QMAKE_MSC_VER is not set, lets set it, what's our MSC_VER. Add a command to set it, rerun qmake and get another error. 'Fix' that one, get another, and so on.
+At this point, there is the danger of jumping down a rabbit hole:  QMAKE_MSC_VER is not set, lets set it, what's our MSC_VER. Add a command to set it, rerun qmake and get another error. 'Fix' that one, get another, and so on.
 
 NO! NO!
 
-To see what is missing we need to revisit our paper chase from the last section. We need to inspect the compilers panel.
+To see what is missing we need to revisit our paper chase from the last section. We need to inspect the compilers panel in Tools/Options.
 <ol>
  	<li>Go to the Project tab. Note the selected Qt version in the Build &amp; Run section of the left-hand panel. For me its "Desktop Qt 5.9.0 MSVC201564bit" figure 2.</li>
  	<li>Menu: Tools/Options. Build &amp; Run tab, Kits tab. Select the Qt version from (1) in the list. Probably in the Auto-detected section.</li>
- 	<li>Lots of information should appear about your Qt version.<strong> Note the entry in the Compiler C++ row.</strong> For me, it's "Microsoft Visual C++ Compiler 14.0 (amd64)" figure 3.</li>
+ 	<li>Lots of information should appear about your Qt version.<strong> Note the entry in the Compiler C++ row.</strong> For me, it's "Microsoft Visual C++ Compiler 14.0 (amd64)"; circled in blue in figure 4 and a close up in figure 5.</li>
  	<li>Visit the compilers tab. Select the row corresponding to the C++ compiler in (3).</li>
- 	<li>A row titled "Initialization" should appear with a command to run a .bat file. For me, the command was "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat amd64". Figure 6.</li>
+ 	<li>A row titled "Initialization" should appear with a command to run a .bat file. For me, the command was "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat amd64"; Figure 7, Figure 8 shows a close-up.</li>
 </ol>
-[caption id="attachment_11" align="alignnone" width="300"]<img class="size-medium wp-image-11" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f5Compilers-300x231.png" alt="" width="300" height="231" /> Figure 6: Qt Creator, Options, Build&amp; Run, Compilers panel.[/caption]
+[caption id="attachment_11" align="alignnone" width="817"]<img class="size-full wp-image-11" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f5Compilers.png" alt="" width="817" height="613" /> Figure 5: Qt Creator, Options, Build&amp; Run, Compilers panel.[/caption]
+
+[caption id="attachment_71" align="alignnone" width="547"]<img class="size-full wp-image-71" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f5.1BuildRun.png" alt="Close up of initizlisation script for selected compiler." width="547" height="93" /> Figure 8: Close up of initialization script for selected compiler.[/caption]
 
 What (5) is saying is that before we can run qmake.exe we need to run the indicated .bat file. This will set QMAKE_MSC_VER and the other environmental variables we will need.
 
-So no try running the batch file. But note there are likely spaces in the path, so you will probably need to put quotes around the path.
+So now try running the batch file. But note there are likely spaces in the path, so you will probably need to put quotes around the path.
 <blockquote><span style="color: #00ff00;">"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\"vcvarsall.bat amd64</span></blockquote>
-Row try running the qmake command. If all is well you should see something like.
+Now try running the qmake command. If all is well you should see something like.
 
 <span style="color: #0000ff;">jom 1.1.2 - empower your cores</span>
 <h3>Build using jom.exe</h3>
-<a href="http://wiki.qt.io/Jom">jom is a clone of nmake</a>. In Qt Creator jom is used with the path to the output file as an argument. For reasons that will be clear later we will compile in the default location, which is in a subdirectory of the project source directory.
+<a href="http://wiki.qt.io/Jom">jom is a clone of nmake</a>. In Qt Creator jom is used with the path to the output file as an argument.  For reasons that will be clear later we will compile in the default location, which is in a subdirectory of the project source directory.
 
-jom.exe is part of Qt Creator. So you should probably add that to the path the same way as we added the qmake directory. C:\Qt\Tools\QtCreator\bin is where my Qt Creator is located, replace this with wherever your Qt Creator is located. No run.
-<blockquote><span style="color: #00ff00;">set PATH=C:\Qt\Tools\QtCreator\bin;%PATH%</span>
-
-<span style="color: #00ff00;">jom.exe </span>
-
-<span style="color: #00ff00;">jom.exe clean</span></blockquote>
-jom.exe will build the project. jom.exe clean will remove unwanted files. You will find the result in the release directory of our minimal_map source directory.
+jom.exe is part of Qt Creator. So you should add the directory containing jom.exe to the PATH envoiremental varable in the same way as we added the qmake directory. C:\Qt\Tools\QtCreator\bin is where my Qt Creator is located, replace this with wherever your Qt Creator is located. Now run:
+<pre><span style="color: #00ff00;">set PATH=C:\Qt\Tools\QtCreator\bin;%PATH%
+jom.exe 
+jom.exe clean</span></pre>
+jom.exe will build the project. jom.exe clean will remove unwanted files. You will find the result in the release directory of our minimal_map source directory. We can now add these lines to the batch file we are building.
 <h2>Recap - buildWin_minimal_map1.bat</h2>
 So using what we have learnt so far we want to set up a batch file to:
 <ol>
  	<li>Set up environmental variables. Some of these could be converted into parameters.</li>
- 	<li>Download source from GitHub into new build directory. Make sure any previous directories have been deleted.</li>
+ 	<li>Download source from GitHub into new build directory; Make sure any previous directories have been deleted.</li>
  	<li>Run the initialise script. Remember to use 'call' to run a .bat file within another .bat file.</li>
  	<li>Run the commands from QtCreator Build Settings.</li>
 </ol>
-Change the BUILD_DIR, QT_DIR and QT_CREATERDIR in buildWin_minimal_map1.bat to match your system then run it. I have made the convention of naming the Project, project directory, executable and .pro file with the same label "minimal_map". This is generally good practice, as, as well as reducing confusion it allows the use of generic batch files like this one.
-<blockquote><em>REM Batch file for auto build</em>
+In the minimal_map/Deploy directroy you will find several .bat files. These are the batch files we are creating, buildWin_minimal_map1.bat shows were we are at so far. I have written it out below:
+<pre><em>REM Batch file for auto build</em>
 
 <em>REM Set project identity variables</em>
 <em>set PROJECTNAME=minimal_map</em>
@@ -132,14 +138,16 @@ mkdir<em> %BUILD_DIR%</em>
 <em>cd %SRCDIR%</em>
 <em>qmake.exe %SRCDIR%\%PROJECTNAME%.pro -spec win32-msvc "CONFIG+=qtquickcompiler" &amp;&amp; jom.exe qmake_all</em>
 <em>jom.exe </em>
-<em>jom.exe clean</em></blockquote>
+<em>jom.exe clean</em></pre>
+You will want to change the BUILD_DIR, QT_DIR and QT_CREATERDIR in buildWin_minimal_map1.bat to match your system then run it. I have made the convention of naming the Project, project directory, executable and .pro file with the same label "minimal_map". This is generally good practice, as, as well as reducing confusion it allows the use of generic batch files like this one.
+
 If you have problems running the whole file run each line in turn. Make sure the build directrory is empty. It is also best to do everything on one dirve, e.g. don't mix c: and d: paths. Make sure the BUILD_DIR, QT_DIR and QT_CREATERDIR variables match your system.
 <h2>Provide Qt system files</h2>
 You should now have a copy of  minimal_map.exe at %BUILD_DIR%\WebExamples\%PROJECTNAME%\release\minimal_map.exe.
 
-Now try running the file. E.g. double click in windows file explorer. You should get an error message about missing files similar to figure 7. Astute readers would have expected this, as we are missing .dll and other Qt files that our programme needs to run.
+Now try running the file. E.g. double click in windows file explorer. You should get an error message about missing files similar to figure 9. Astute readers would have expected this, as we are missing .dlls and other Qt files that our programme needs to run.
 
-[caption id="attachment_12" align="alignnone" width="300"]<img class="size-medium wp-image-12" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f6NoDllError-300x112.png" alt="Figure 6: Dll not found error message." width="300" height="112" /> Figure 6: Entry point not found error message.[/caption]
+[caption id="attachment_12" align="alignnone" width="481"]<img class="size-full wp-image-12" src="http://piersshepperson.co.uk/programming/wp-content/uploads/2017/06/f6NoDllError.png" alt="Figure 6: Dll not found error message." width="481" height="179" /> Figure 6: Dll not found error message.[/caption]
 
 Sometimes where we do this sort of test the executable will run despite missing the required files. This means the operating system has managed to find some matching files somewhere. This is bad and is why it is advisable to do deployment tests on a machine without Qt installed, or if that is too inconvinet as here, just temporarily rename the Qt directory.
 
@@ -151,48 +159,60 @@ So that works, but the big problem is that our build is now nearly 5GB. This is 
 
 If our maximal build works we know that we just need to add the right files to complete our build. While if it does not work, we know that the problem is elsewhere and maybe our project is not ready for deployment.
 <h3>windeployqt.exe</h3>
-The Windows deployment tool, windeployqt.exe, is a useful tool that takes an executable, and copies over the Qt files needed to support running the executable.
-
-The tool works fairly well. It copies most files over but sometimes will miss some. We will see that when we look at the simpletextviewer project later.
+The Windows deployment tool, windeployqt.exe, is a useful tool that takes an executable, and copies over the Qt files needed to support running the executable.  The tool works fairly well. It copies most files over but sometimes will miss some. We will see that when we look at the simpletextviewer project later.
 
 You can read more about windepolyqt.exe at <a href="http://doc.qt.io/qt-5/windows-deployment.html">http://doc.qt.io/qt-5/windows-deployment.html</a>. We will be running windepolyqt.exe with two arguments, the qml source directory and the path to our minimal_map.exe file.
 
 windepolyqt.exe --qmldir [qml source directory] [our.exe]
 
 We can now add four more lines to our batch file
-<blockquote>REM Build release
+<pre>REM Build release
 set WINDEPLOYQT_EXE=%QT_DIR%\bin\windeployqt.exe
 set RELEASE_DIR=%SRCDIR%\release
 set QML_DIR=%SRCDIR%
-%WINDEPLOYQT_EXE% --qmldir %QML_DIR% %RELEASE_DIR%\%PROJECTNAME%.exe</blockquote>
-Delete your build directory, and try running buildWin_minimal_map2.bat.  Now find the release directory and run minimal_map.exe; this time it should run smoothly.
+%WINDEPLOYQT_EXE% --qmldir %QML_DIR% %RELEASE_DIR%\%PROJECTNAME%.exe</pre>
+Delete your build directory, and try running \minimal_map\deploy\buildWin_minimal_map2.bat.  Now find the release build directory and run the just built minimal_map.exe; this time it should run smoothly.
 <h3>Dependency Walker</h3>
-We does not apply herer, but if on testing it becomes apparent that windeployqt.exe has not copied all the files over, you need to find the missing files. It's usually going to be best to start with the windeployqt.exe solution and add files, rather than use the maximal solution and remove files.
+It does not apply her, but if on testing if it becomes apparent that windeployqt.exe has not copied all the files over, you need to find the missing files. It's usually going to be best to start with the windeployqt.exe solution and add files, rather than use the maximal solution and remove files.
 
-One useful tool is Dependancy Walker; it can be downloaded from http://www.dependencywalker.com . If you load an executable file into Dependancy Walker it will list the dependent DLLs. you can use this to determine the missing files.
+One useful tool is Dependancy Walker; it can be downloaded from http://www.dependencywalker.com . If you load an executable file into Dependancy Walker it will list the dependent DLLs. Hence you can use this to determine the missing files.
 
-Alternatively, you can use common sense, error messages and knowledge of the code to guess the files. Checking internet blogs and forums can also be useful.
+Alternatively, you can use common sense, error messages and knowledge of the code to guess the files. Checking internet blogs and forums can also be useful.  We will look at these options further <a href="http://piersshepperson.co.uk/programming/2017/06/17/autobuild-for-qt…ct-with-assitant/">in out next post</a>, when we write a build script for a project that includes the QT Assistant help application.
 
-We will look at these options further <a href="http://piersshepperson.co.uk/programming/2017/06/17/autobuild-for-qt…ct-with-assitant/">in out next post</a>.
-<h2>Installer</h2>
+Now that we have built our project, we wish to bind it together into a Windows install script. An executable that will automatically install our file on Windows.
+<h2>Installer, Inno setup</h2>
 For this post, I will be using <a href="http://www.jrsoftware.org/isinfo.php">Inno Setup </a>to create our installer. You can install from http://www.jrsoftware.org/isdl.php.
-
-To set up the installer you create a .iss file which gives the configuration details for your installation. Then run the executable iscc.exe using the .iss file as input. You can use the Compil32.exe to start a script wizard to create a custom .iss file.
-
-minimal_map\deploy\minimal_map.iss contains an example .iss file for the minimal_map.exe project. To run it we add the following lines to the end of our batch file. Change the set INNO_DIR command to match wherever you have installed Inno Setup.
-<blockquote>REM Create install file
-set INNO_DIR="C:\Program Files (x86)\Inno Setup 5"
-cd %INNO_DIR%
-iscc /Q %SRCDIR%\deploy\%PROJECTNAME%.iss</blockquote>
-Delete the current BUILD_DIR% directory and run buildWin_minimal_map_final.bat. In the WebExamples\minimal_map\deploy\Output\minimal_mapSetup.exe directory, you should find the installer.
 <h3>Configure .iss file</h3>
+minimal_map\deploy\minimal_map.iss contains an example .iss file for the minimal_map.exe project. Open it and try to make sense of it, online help documentation is provided <a href="http://www.jrsoftware.org/ishelp/">here</a>.
+
 All the paths in the .iss file are relative to the position of the .iss file. So for instance line 40
-<blockquote>[Files]
-Source: ..\release\*; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs</blockquote>
+<pre>[Files]
+Source: ..\release\*; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs</pre>
 We indicate the files to include in the installer as ..\release\*. This is why we used the default settings when we run jom.exe so that we can easily reference the files in %BUILD_DIR%\WebExamples\minimal_map\release to be included in the installation.
 
 Lines 24-26
-<blockquote>LicenseFile=LicenseFileWin.txt
+<pre>LicenseFile=LicenseFileWin.txt
 InfoBeforeFile=InfoBeforeWin.txt
-InfoAfterFile=InfoAfterWin.txt</blockquote>
+InfoAfterFile=InfoAfterWin.txt</pre>
 These files give the text that is displayed during installation. Feel free to edit.
+
+To set up the installer you create a .iss file which gives the configuration details for your installation. Then run the executable iscc.exe using the .iss file as input this will produce our installer. If you want you can use a script wizard, Compil32.exe, to create a custom .iss file.
+<h3>Final Batch script</h3>
+To run our minimal_map.iss file we add the following lines to the end of our batch file. Change the set INNO_DIR command to match wherever you have installed Inno Setup.
+<pre>REM Create install file
+set INNO_DIR="C:\Program Files (x86)\Inno Setup 5"
+cd %INNO_DIR%
+iscc /Q %SRCDIR%\deploy\%PROJECTNAME%.iss</pre>
+Delete the current BUILD_DIR% directory and run the <a href="https://github.com/Sriep/WebExamples/blob/master/minimal_map/deploy/buildWin_minimal_map_final.bat">buildWin_minimal_map_final.bat</a>. In the WebExamples\minimal_map\deploy\Output\minimal_mapSetup.exe directory, you should find the installer. 
+As a final test, you can run the installer to install the minimum map project on your PC.
+<h2>Summery</h2>
+We create a deployment script for the Qt example minimum_map, that can be easily modified to work with most simple Qt Creator projects. The steps followed:
+<ul>
+ 	<li>Set environmental variables for your project and system.</li>
+ 	<li>If necessary use vcvarsall.bat to set environmental variables for Visual Studio.</li>
+ 	<li>Compile using commands given in the Qt Creator Project, Build Settings tab.</li>
+ 	<li>Run windeployqt.exe to copy Qt and other dependencies need to run the project.</li>
+ 	<li>Use Inno Setup to create the final install file.</li>
+</ul>
+</div>
+</div>

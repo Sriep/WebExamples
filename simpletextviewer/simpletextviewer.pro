@@ -30,4 +30,6 @@ DISTFILES += \
     deploy/simpletextviewer.iss \
     deploy/buildLinux_simpletestviewer.sh \
     release/default.desktop \
-    deploy/buildWin_simpletextviewer_final.bat
+    deploy/buildWin_simpletextviewer_final.bat \
+    deploy/simpletextviewer.iss \
+    deploy/buildWin_simpletextviewer_final2.bat
