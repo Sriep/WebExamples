@@ -6,7 +6,7 @@ set GITHUB_URL=https://github.com/Sriep/WebExamples.git
 set BUILD_DIR=C:\Data\Build_%PROJECTNAME%
 
 REM Set executable locations
-set QT_DIR=C:\Qt\5.9\msvc2015_64
+set QT_DIR=C:\Qt\5.9.1\msvc2015_64
 set QT_CREATORDIR=C:\Qt\Tools\QtCreator
 
 REM Set internal variables

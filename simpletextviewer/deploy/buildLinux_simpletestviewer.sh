@@ -5,14 +5,16 @@
 PROJECTNAME=simpletextviewer
 GITHUB_URL=https://github.com/Sriep/WebExamples.git
 # WARNING rm -rf used cearful with path
-BUILD_DIR=/home/piers/Documents/Build/Build_$PROJECTNAME
-# WARNING rm -rf used cearful with path
+BUILD_DIR=$HOME/Documents/Build/Build_$PROJECTNAME
+# Alternatly add date to directory name
+# TODAY=$(date -I)
+# BUILD_DIR=/home/piers/Documents/Build/Build_$PROJECTNAME.$TODAY
 
 # Set executable locations
-QT_DIR=/home/piers/Qt/5.9.1/gcc_64
-QT_CREATORDIR=/home/piers/Qt/Tools/QtCreator
+QT_DIR=$HOME/Qt/5.9.1/gcc_64
+QT_CREATORDIR=$HOME/Qt/Tools/QtCreator
 MAKE_DIR=/usr/bin
-LINUXDEPLOY=/home/piers/software/linuxdeployqt
+LINUXDEPLOY=$HOME/software/linuxdeployqt
 
 # Set internal variables
 SRCDIR=$BUILD_DIR/WebExamples/$PROJECTNAME
@@ -44,7 +46,7 @@ DOC_DIR=$SRCDIR/documentation
 qhelpgenerator $DOC_DIR/simpletextviewer.qhp -o $RELEASE_DIR/simpletextviewer.qch
 qcollectiongenerator $DOC_DIR/simpletextviewer.qhcp -o $RELEASE_DIR/simpletextviewer.qhc
 
-# Build release
+# Build AppImage
 cp $QT_DIR/bin/assistant  $RELEASE_DIR/assistant
 $LINUXDEPLOY  $RELEASE_DIR/assistant
 $LINUXDEPLOY  $RELEASE_DIR/$PROJECTNAME -qmldir=$QML_DIR -appimage -bundle-non-qt-libs -no-translations

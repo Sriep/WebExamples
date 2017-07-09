@@ -4,15 +4,17 @@
 # Set project identity variables
 PROJECTNAME=minimal_map
 GITHUB_URL=https://github.com/Sriep/WebExamples.git
-# WARNING rm -rf used cearful with path
-BUILD_DIR=/home/piers/Documents/Build/Build_$PROJECTNAME
-# WARNING rm -rf used cearful with path
+# WARNING rm -rf used cearful with path\
+BUILD_DIR=$HOME/Documents/Build/Build_$PROJECTNAME
+# Alternatly add date to directory name
+# TODAY=$(date -I)
+# BUILD_DIR=/home/piers/Documents/Build/Build_$PROJECTNAME.$TODAY
 
 # Set executable locations
-QT_DIR=/home/piers/Qt/5.9.1/gcc_64
-QT_CREATORDIR=/home/piers/Qt/Tools/QtCreator
+QT_DIR=$HOME/Qt/5.9.1/gcc_64
+QT_CREATORDIR=$HOME/Qt/Tools/QtCreator
 MAKE_DIR=/usr/bin
-LINUXDEPLOY=/home/piers/software/linuxdeployqt
+LINUXDEPLOY=$HOME/software/linuxdeployqt
 
 # Set internal variables
 SRCDIR=$BUILD_DIR/WebExamples/$PROJECTNAME
@@ -21,7 +23,6 @@ RELEASE_DIR=$SRCDIR/release
 QML_DIR=$SRCDIR
 
 # Setup build directory
-# rm -r  $BUILD_DIR
 rm -r -f $BUILD_DIR
 mkdir $BUILD_DIR
 
@@ -38,7 +39,7 @@ qmake  $SRCDIR/$PROJECTNAME.pro -spec linux-g++ && make qmake_all
 make 
 make clean 
 
-# Build release
+# Build AppImage
 mkdir $RELEASE_DIR/plugins
 cp -r $QT_DIR/plugins/geoservices $RELEASE_DIR/plugins/geoservices
 cp -r $QT_DIR/plugins/xcbglintegrations $RELEASE_DIR/plugins/xcbglintegrations
